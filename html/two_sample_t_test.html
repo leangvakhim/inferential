@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Sample Independent T-Test Visualization</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for rendering formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* Smooth transitions for step changes */
+        .step-container {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-6 shadow-md">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold">Inferential Statistics</h1>
+                <p class="text-blue-100 text-sm mt-1">Two-Sample Independent T-Test</p>
+            </div>
+            <div class="hidden sm:block">
+                <svg class="w-10 h-10 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                    </path>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="flex justify-between text-xs font-semibold text-slate-500 mb-2">
+                <span>Start</span>
+                <span id="step-indicator">Step 1 of 7</span>
+                <span>Finish</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                    style="width: 14.28%"></div>
+            </div>
+        </div>
+
+        <!-- Card Container -->
+        <div
+            class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 sm:p-8 min-h-[450px] relative overflow-hidden flex flex-col">
+
+            <!-- STEP 1: Introduction -->
+            <div id="step-1" class="step-container fade-in flex-grow">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">1. The Scenario & Concept</h2>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-6">
+                    <p class="font-medium text-blue-900">Real-World Example:</p>
+                    <p class="text-sm mt-1 text-blue-800">Imagine a school trying two different teaching methods to see
+                        which one is better at improving math scores. <strong>Method A</strong> is taught to Class 1,
+                        and <strong>Method B</strong> is taught to Class 2. At the end of the year, we want to know:
+                        <em>Is there a statistically significant difference in the average test scores between the two
+                            classes?</em></p>
+                </div>
+                <p class="mb-4">A <strong>Two-Sample Independent T-Test</strong> is used to compare the means (averages)
+                    of two independent, distinct groups to determine if there is statistical evidence that the
+                    associated population means are significantly different.</p>
+
+                <div class="flex justify-center gap-8 mt-8">
+                    <div class="text-center">
+                        <div
+                            class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto border-4 border-indigo-300 mb-2">
+                            <span class="text-2xl font-bold text-indigo-700">A</span>
+                        </div>
+                        <p class="font-semibold text-slate-600">Class 1</p>
+                        <p class="text-xs text-slate-500">Traditional</p>
+                    </div>
+                    <div class="flex items-center text-slate-400 font-bold text-xl">VS</div>
+                    <div class="text-center">
+                        <div
+                            class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto border-4 border-emerald-300 mb-2">
+                            <span class="text-2xl font-bold text-emerald-700">B</span>
+                        </div>
+                        <p class="font-semibold text-slate-600">Class 2</p>
+                        <p class="text-xs text-slate-500">Interactive</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Hypotheses -->
+            <div id="step-2" class="step-container hidden flex-grow">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">2. Setting the Hypotheses</h2>
+                <p class="mb-4">Before looking at the data, we must state our assumptions. We create two conflicting
+                    statements.</p>
+
+                <div class="grid sm:grid-cols-2 gap-6 mt-6">
+                    <!-- Null Hypothesis -->
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-2 h-full bg-slate-400"></div>
+                        <h3 class="font-bold text-lg text-slate-700">Null Hypothesis ($H_0$)</h3>
+                        <p class="text-2xl font-bold text-center my-4">$ \mu_1 = \mu_2 $</p>
+                        <p class="text-sm text-slate-600"><strong>Concept:</strong> There is <em>no difference</em>. Any
+                            difference we see is just due to random chance.<br><br><strong>Example:</strong> Both
+                            teaching methods result in the exact same average math scores.</p>
+                    </div>
+
+                    <!-- Alternative Hypothesis -->
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-2 h-full bg-blue-500"></div>
+                        <h3 class="font-bold text-lg text-blue-800">Alternative Hypothesis ($H_a$)</h3>
+                        <p class="text-2xl font-bold text-center my-4">$ \mu_1 \neq \mu_2 $</p>
+                        <p class="text-sm text-slate-600"><strong>Concept:</strong> There <em>is a true difference</em>
+                            between the populations.<br><br><strong>Example:</strong> The average math scores for Method
+                            A and Method B are genuinely different.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Data Collection -->
+            <div id="step-3" class="step-container hidden flex-grow">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">3. Collecting the Sample Data</h2>
+                <p class="mb-6">We test the students and calculate the summary statistics. We need the sample size
+                    ($n$), the sample mean ($\bar{x}$), and the standard deviation ($s$) for both groups.</p>
+
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                    <!-- Group 1 Data -->
+                    <div class="w-full sm:w-1/2 bg-white rounded-lg shadow border border-indigo-100 p-5">
+                        <h4 class="text-center font-bold text-indigo-700 mb-4 border-b pb-2">Method A (Class 1)</h4>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex justify-between items-center bg-indigo-50 px-3 py-2 rounded">
+                                <span class="font-semibold text-slate-600">Sample Size ($n_1$)</span>
+                                <span class="font-bold">30 students</span>
+                            </li>
+                            <li class="flex justify-between items-center bg-indigo-50 px-3 py-2 rounded">
+                                <span class="font-semibold text-slate-600">Mean Score ($\bar{x}_1$)</span>
+                                <span class="font-bold">75 points</span>
+                            </li>
+                            <li class="flex justify-between items-center bg-indigo-50 px-3 py-2 rounded">
+                                <span class="font-semibold text-slate-600">Std Deviation ($s_1$)</span>
+                                <span class="font-bold">8.5 points</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Group 2 Data -->
+                    <div class="w-full sm:w-1/2 bg-white rounded-lg shadow border border-emerald-100 p-5">
+                        <h4 class="text-center font-bold text-emerald-700 mb-4 border-b pb-2">Method B (Class 2)</h4>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex justify-between items-center bg-emerald-50 px-3 py-2 rounded">
+                                <span class="font-semibold text-slate-600">Sample Size ($n_2$)</span>
+                                <span class="font-bold">32 students</span>
+                            </li>
+                            <li class="flex justify-between items-center bg-emerald-50 px-3 py-2 rounded">
+                                <span class="font-semibold text-slate-600">Mean Score ($\bar{x}_2$)</span>
+                                <span class="font-bold">82 points</span>
+                            </li>
+                            <li class="flex justify-between items-center bg-emerald-50 px-3 py-2 rounded">
+                                <span class="font-semibold text-slate-600">Std Deviation ($s_2$)</span>
+                                <span class="font-bold">7.2 points</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-center text-sm text-slate-500 mt-4 italic">Notice the means are different (75 vs 82). But
+                    is a 7-point difference significant enough, given the spread of the data?</p>
+            </div>
+
+            <!-- STEP 4: The T-Statistic -->
+            <div id="step-4" class="step-container hidden flex-grow">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">4. Calculating the T-Statistic (Signal vs. Noise)</h2>
+                <p class="mb-4">The T-statistic calculates a ratio. It compares the difference between our group means
+                    (the <strong>Signal</strong>) to the variability or spread of the groups (the
+                    <strong>Noise</strong>).</p>
+
+                <div class="bg-amber-50 rounded-xl p-6 border border-amber-200 shadow-inner my-6">
+                    <div class="text-center text-xl sm:text-2xl font-bold mb-4">
+                        $$ t = \frac{\text{Signal}}{\text{Noise}} = \frac{\text{Difference between group
+                        means}}{\text{Variability of groups}} $$
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+                            <strong class="text-blue-600">The Signal ($\bar{x}_1 - \bar{x}_2$):</strong><br>
+                            If the means are far apart (e.g., 75 vs 82), the signal is strong. Our signal is $|75 - 82|
+                            = 7$.
+                        </div>
+                        <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+                            <strong class="text-red-500">The Noise (Standard Error):</strong><br>
+                            If scores are highly variable (high standard deviation), it's hard to tell if the 7-point
+                            difference is real or just luck.
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm"><em>A larger t-value means the signal is much stronger than the noise, indicating a
+                        higher likelihood that the true populations are different.</em></p>
+            </div>
+
+            <!-- STEP 5: P-Value & Distribution -->
+            <div id="step-5" class="step-container hidden flex-grow">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">5. Degrees of Freedom & The P-Value</h2>
+                <p class="mb-2">Once we have our t-statistic, we plot it on a t-distribution curve. The shape of this
+                    curve depends on our sample sizes, known as <strong>Degrees of Freedom ($df$)</strong>.</p>
+                <p class="text-sm text-slate-600 mb-4">For our example: $df = (30 - 1) + (32 - 1) = 60$.</p>
+
+                <!-- SVG Bell Curve Visualization -->
+                <div class="relative w-full max-w-md mx-auto h-48 sm:h-56">
+                    <svg viewBox="0 0 100 50" class="w-full h-full" preserveAspectRatio="none">
+                        <!-- X-axis -->
+                        <line x1="0" y1="45" x2="100" y2="45" stroke="#94a3b8" stroke-width="0.5" />
+                        <!-- Center line -->
+                        <line x1="50" y1="5" x2="50" y2="45" stroke="#cbd5e1" stroke-width="0.5"
+                            stroke-dasharray="2,2" />
+
+                        <!-- The Curve (Normal/T distribution approx) -->
+                        <path d="M 0 44.5 C 30 44.5, 38 5, 50 5 C 62 5, 70 44.5, 100 44.5" fill="none" stroke="#2563eb"
+                            stroke-width="1.5" />
+
+                        <!-- Left Tail (Shaded) -->
+                        <path d="M 0 44.5 C 10 44.5, 15 42, 20 38 L 20 44.5 Z" fill="#fca5a5" opacity="0.8" />
+                        <!-- Right Tail (Shaded) -->
+                        <path d="M 80 38 C 85 42, 90 44.5, 100 44.5 L 100 44.5 L 80 44.5 Z" fill="#fca5a5"
+                            opacity="0.8" />
+
+                        <!-- T-score markers -->
+                        <line x1="80" y1="38" x2="80" y2="48" stroke="#ef4444" stroke-width="0.5" />
+                        <text x="80" y="50" font-size="3" fill="#ef4444" text-anchor="middle">+t</text>
+
+                        <line x1="20" y1="38" x2="20" y2="48" stroke="#ef4444" stroke-width="0.5" />
+                        <text x="20" y="50" font-size="3" fill="#ef4444" text-anchor="middle">-t</text>
+
+                        <text x="50" y="49" font-size="3" fill="#64748b" text-anchor="middle">0 (Null Hypothesis is
+                            true)</text>
+                    </svg>
+                </div>
+
+                <div class="mt-4 bg-red-50 p-4 rounded-lg border border-red-100 text-sm">
+                    <p>The shaded red areas represent the <strong>P-value</strong>. It answers: <em>"If the null
+                            hypothesis is true (methods are exactly equal), what is the probability of seeing a 7-point
+                            difference or greater purely by chance?"</em></p>
+                </div>
+            </div>
+
+            <!-- STEP 6: Conclusion -->
+            <div id="step-6" class="step-container hidden flex-grow">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">6. Making the Conclusion</h2>
+                <p class="mb-6">To make our final decision, we compare our calculated P-value to an alpha level
+                    ($\alpha$), typically set at <strong>0.05</strong> (a 5% threshold).</p>
+
+                <div class="flex flex-col md:flex-row gap-6">
+                    <!-- Scenario A -->
+                    <div class="flex-1 border-2 border-emerald-400 rounded-xl p-5 bg-white relative overflow-hidden">
+                        <div class="absolute top-2 right-2 text-emerald-500">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-lg text-emerald-700 mb-2">If P-value < 0.05</h3>
+                                <p class="font-semibold text-slate-800">Reject the Null Hypothesis.</p>
+                                <p class="text-sm text-slate-600 mt-2"><strong>Conclusion:</strong> There is a
+                                    statistically significant difference. The 7-point difference is too large to be just
+                                    random chance. Method B is genuinely performing differently than Method A.</p>
+                    </div>
+
+                    <!-- Scenario B -->
+                    <div class="flex-1 border-2 border-slate-300 rounded-xl p-5 bg-slate-50 relative overflow-hidden">
+                        <div class="absolute top-2 right-2 text-slate-400">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-600 mb-2">If P-value ≥ 0.05</h3>
+                        <p class="font-semibold text-slate-800">Fail to Reject the Null Hypothesis.</p>
+                        <p class="text-sm text-slate-600 mt-2"><strong>Conclusion:</strong> There is not enough evidence
+                            to prove a difference. That 7-point gap could realistically just be luck of the draw. We
+                            assume the methods are effectively the same.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 7: Recap & Formulas -->
+            <div id="step-7" class="step-container hidden flex-grow">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">7. Recap & The Mathematical Formulas</h2>
+                <p class="text-sm mb-4">Here is the complete mathematical breakdown of the Two-Sample Independent
+                    T-Test.</p>
+
+                <div class="space-y-6">
+                    <!-- Formulas box -->
+                    <div class="bg-white border border-slate-200 shadow-sm rounded-lg p-5">
+                        <h3 class="font-bold text-slate-800 border-b pb-2 mb-4">1. When assuming Equal Variances
+                            (Standard)</h3>
+                        <p class="text-sm text-slate-600 mb-2">First, calculate the Pooled Variance ($s_p^2$):</p>
+                        <div class="overflow-x-auto text-center py-2">
+                            $$ s_p^2 = \frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2} $$
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2 mt-4">Then, calculate the T-Statistic:</p>
+                        <div class="overflow-x-auto text-center py-2">
+                            $$ t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{s_p^2 \left( \frac{1}{n_1} + \frac{1}{n_2}
+                            \right)}} $$
+                        </div>
+                        <p class="text-sm text-slate-600 mt-4">Degrees of Freedom: $df = n_1 + n_2 - 2$</p>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 shadow-sm rounded-lg p-5">
+                        <h3 class="font-bold text-slate-800 border-b pb-2 mb-4">2. When assuming Unequal Variances
+                            (Welch's T-Test)</h3>
+                        <p class="text-sm text-slate-600 mb-2">If the standard deviations of the groups are very
+                            different, we use this version (often the safest default in modern stats):</p>
+                        <div class="overflow-x-auto text-center py-2">
+                            $$ t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}} $$
+                        </div>
+                        <p class="text-sm text-slate-600 mt-4">Degrees of Freedom (Welch-Satterthwaite equation):</p>
+                        <div class="overflow-x-auto text-center py-2">
+                            $$ df = \frac{\left(\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}\right)^2}{\frac{(s_1^2/n_1)^2}{n_1
+                            - 1} + \frac{(s_2^2/n_2)^2}{n_2 - 1}} $$
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-100">
+                <button id="prev-btn" onclick="changeStep(-1)"
+                    class="px-5 py-2.5 rounded-lg font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    ← Previous
+                </button>
+                <button id="next-btn" onclick="changeStep(1)"
+                    class="px-5 py-2.5 rounded-lg font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next Step →
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center p-4 text-slate-400 text-sm mt-auto">
+        Interactive Inferential Statistics Visualization
+    </footer>
+
+    <script src="../js/two_sample_t_test.js"></script>
+</body>
+
+</html>

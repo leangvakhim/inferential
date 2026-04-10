@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Proportion Z-Test Visualizer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for LaTeX formatting -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            },
+            startup: {
+                typeset: false // We will manually trigger typesetting when steps change
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <style>
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Fade in animation */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100 min-h-screen text-slate-800 font-sans selection:bg-indigo-200">
+
+    <main class="container mx-auto px-4 py-8 max-w-5xl h-screen flex flex-col justify-center">
+        <!-- Main Application Card -->
+        <div class="bg-white rounded-2xl shadow-xl flex flex-col h-[85vh] overflow-hidden border border-slate-200">
+
+            <!-- Header & Progress -->
+            <div class="bg-indigo-600 text-white px-6 py-4 flex-shrink-0">
+                <div class="flex justify-between items-center mb-4">
+                    <h1 class="text-2xl font-bold flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                            </path>
+                        </svg>
+                        One Proportion Z-Test Journey
+                    </h1>
+                    <span id="step-counter" class="text-indigo-200 font-medium tracking-wider text-sm uppercase">Step 1
+                        of 8</span>
+                </div>
+                <!-- Progress Bar -->
+                <div class="h-2 bg-indigo-800 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-indigo-300 transition-all duration-500 ease-out w-0"></div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div id="content-container" class="flex-grow p-6 sm:p-8 overflow-y-auto fade-in">
+                <div class="max-w-3xl mx-auto">
+                    <h2 id="step-title" class="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">Title
+                        Placeholder</h2>
+                    <div id="step-description"
+                        class="prose prose-slate prose-lg max-w-none mb-8 text-slate-600 leading-relaxed">
+                        Description placeholder.
+                    </div>
+
+                    <!-- Dynamic Visuals Box -->
+                    <div id="step-visual"
+                        class="bg-slate-50 rounded-xl p-6 border border-slate-200 shadow-inner min-h-[250px] flex items-center justify-center">
+                        Visual placeholder.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer & Controls -->
+            <div
+                class="bg-slate-50 border-t border-slate-200 px-6 py-4 flex-shrink-0 flex justify-between items-center">
+                <button id="btn-prev"
+                    class="px-6 py-2.5 rounded-lg font-medium text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                        </path>
+                    </svg>
+                    Previous
+                </button>
+                <div class="flex gap-2" id="dot-indicators">
+                    <!-- Dots generated by JS -->
+                </div>
+                <button id="btn-next"
+                    class="px-6 py-2.5 rounded-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2">
+                    Next
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="../js/one_proportion_z_test.js"></script>
+</body>
+
+</html>

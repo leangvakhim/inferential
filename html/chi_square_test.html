@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Chi-Square Test Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configure MathJax for LaTeX rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                typeset: false // We will manually typeset after rendering steps
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Smooth transitions for our content */
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Table Styles */
+        .stat-table th,
+        .stat-table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+
+        .highlight-cell {
+            background-color: #dbeafe;
+            /* blue-100 */
+            font-weight: bold;
+            color: #1e3a8a;
+            /* blue-900 */
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex items-center justify-center p-4">
+
+    <div class="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col h-[95vh]">
+
+        <!-- Header -->
+        <div class="bg-indigo-600 text-white p-6 shadow-md relative z-10">
+            <h1 class="text-2xl md:text-3xl font-bold">Understanding the Chi-Square ($\chi^2$) Test</h1>
+            <p class="text-indigo-100 mt-2">A step-by-step interactive guide to inferential statistics.</p>
+
+            <!-- Progress Bar -->
+            <div class="mt-6 bg-indigo-800 rounded-full h-2.5 w-full overflow-hidden">
+                <div id="progress-bar" class="bg-amber-400 h-2.5 rounded-full transition-all duration-500 ease-out"
+                    style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-xs font-semibold text-indigo-200 mt-2 uppercase tracking-wider"
+                id="step-indicators">
+                <!-- Indicators injected via JS -->
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-grow p-6 md:p-10 overflow-y-auto relative bg-slate-50" id="content-area">
+            <div id="step-container" class="fade-enter fade-enter-active max-w-3xl mx-auto">
+                <!-- Step content injected here -->
+            </div>
+        </div>
+
+        <!-- Footer / Navigation -->
+        <div
+            class="bg-white border-t border-slate-200 p-4 md:p-6 flex justify-between items-center shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <button id="prev-btn"
+                class="px-5 py-2.5 rounded-lg font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                        clip-rule="evenodd" />
+                </svg>
+                Previous
+            </button>
+
+            <div class="text-slate-500 font-medium text-sm">
+                Step <span id="current-step-display">1</span> of <span id="total-steps-display">7</span>
+            </div>
+
+            <button id="next-btn"
+                class="px-5 py-2.5 rounded-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script src="../js/chi_square_test.js"></script>
+</body>
+
+</html>

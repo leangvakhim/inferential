@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sampling in Inferential Statistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for animations and specific visual elements */
+        .dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .region-box {
+            position: absolute;
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 0.5rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+            z-index: 1;
+        }
+
+        #population-region {
+            top: 5%;
+            left: 5%;
+            width: 45%;
+            height: 90%;
+        }
+
+        #sample-region {
+            top: 5%;
+            right: 5%;
+            width: 35%;
+            height: 90%;
+            border-color: #93c5fd;
+            background-color: rgba(239, 246, 255, 0.5);
+            color: #3b82f6;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid #3b82f6;
+            animation: pulse 1.5s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans flex flex-col">
+
+    <header class="bg-white border-b border-slate-200 py-4 px-6 shadow-sm flex-shrink-0">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="text-blue-600">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="2" />
+                </svg>
+                Inferential Statistics: Sampling
+            </h1>
+            <div class="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full" id="progress-indicator">
+                Step 1 of 7
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto p-6 flex flex-col lg:flex-row gap-8 items-stretch">
+
+        <!-- Left Side: Interactive Visualization -->
+        <div class="w-full lg:w-3/5 bg-white rounded-xl shadow-sm border border-slate-200 relative overflow-hidden min-h-[400px] lg:min-h-full flex-shrink-0"
+            id="canvas-container">
+            <div id="population-region" class="region-box">Population Area</div>
+            <div id="sample-region" class="region-box opacity-0 transition-opacity duration-500">Sample Area</div>
+            <!-- Dots will be injected here via JS -->
+        </div>
+
+        <!-- Right Side: Educational Content -->
+        <div
+            class="w-full lg:w-2/5 flex flex-col justify-between bg-white rounded-xl shadow-sm border border-slate-200 p-6 lg:p-8">
+
+            <div class="flex-grow">
+                <div class="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded mb-4 uppercase tracking-wider"
+                    id="concept-tag">Basics</div>
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-4" id="step-title">Population vs. Sample</h2>
+                <p class="text-slate-600 text-lg leading-relaxed mb-6" id="step-desc">
+                    In inferential statistics, we want to learn about a large group (the Population). Because it's too
+                    difficult or expensive to measure everyone, we select a smaller, manageable subset (the Sample) to
+                    represent them.
+                </p>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-5 relative">
+                    <div
+                        class="absolute -top-3 left-4 bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-xs font-bold border border-amber-200">
+                        Real-World Scenario
+                    </div>
+                    <p class="text-amber-900 text-sm leading-relaxed" id="step-example">
+                        <strong>Goal:</strong> Find the average cups of coffee consumed per week by adults in "Brew
+                        City".<br><br>
+                        <strong>Population:</strong> All 100,000 adults in the city. (Too many to survey!)<br>
+                        <strong>Sample:</strong> A selected group of 1,000 adults that we will actually ask.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="mt-8 pt-6 border-t border-slate-100 flex justify-between items-center">
+                <button id="btn-prev"
+                    class="px-5 py-2.5 rounded-lg font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    ← Previous
+                </button>
+                <div class="flex gap-1" id="dot-indicators">
+                    <!-- Dots generated by JS -->
+                </div>
+                <button id="btn-next"
+                    class="px-5 py-2.5 rounded-lg font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next Step →
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/sampling.js"></script>
+</body>
+
+</html>

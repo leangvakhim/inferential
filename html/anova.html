@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive ANOVA Visualization</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for rendering LaTeX formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                typeset: false // We will typeset manually after rendering content
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Custom styles for chart elements to allow smooth transitions */
+        .dot {
+            transition: all 0.5s ease-in-out;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, 50%);
+        }
+
+        .line {
+            transition: all 0.5s ease-in-out;
+            position: absolute;
+            transform-origin: left center;
+        }
+
+        .fade-enter {
+            opacity: 0;
+        }
+
+        .fade-enter-active {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .fade-exit {
+            opacity: 1;
+        }
+
+        .fade-exit-active {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .formula-box {
+            background: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100 min-h-screen font-sans text-slate-800 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-6 shadow-md">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-3xl font-bold">Interactive ANOVA Visualization</h1>
+            <p class="text-blue-100 mt-2">Understanding Analysis of Variance Step-by-Step</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-5xl overflow-hidden flex flex-col min-h-[600px]">
+
+            <div
+                class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+
+                <!-- Left Column: Text & Math Content -->
+                <div class="p-6 md:p-8 flex flex-col justify-center">
+                    <span id="step-badge"
+                        class="inline-block bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full mb-4 w-max">Step
+                        1 of 6</span>
+                    <h2 id="step-title" class="text-2xl font-bold mb-4 text-slate-800">Title</h2>
+                    <div id="step-description" class="text-slate-600 space-y-4 mb-6 leading-relaxed">
+                        <!-- Content injected via JS -->
+                    </div>
+                    <div id="step-example"
+                        class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-800">
+                        <!-- Example injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Right Column: Interactive Visualization -->
+                <div class="bg-slate-50 p-6 md:p-8 flex flex-col items-center justify-center relative">
+                    <div id="chart-title" class="text-center font-semibold text-slate-700 mb-4 hidden">Plant Height
+                        Visualization</div>
+
+                    <!-- The Chart Container -->
+                    <div id="chart-area"
+                        class="relative w-full max-w-sm h-80 bg-white border-2 border-slate-200 rounded-lg shadow-inner overflow-hidden">
+                        <!-- Y-Axis labels -->
+                        <div class="absolute left-2 bottom-0 text-xs text-slate-400">0cm</div>
+                        <div class="absolute left-2 top-0 text-xs text-slate-400">10cm</div>
+
+                        <!-- X-Axis labels -->
+                        <div class="absolute bottom-2 left-[16.5%] -translate-x-1/2 text-xs font-bold text-blue-600">
+                            Fertilizer A</div>
+                        <div class="absolute bottom-2 left-[50%] -translate-x-1/2 text-xs font-bold text-green-600">
+                            Fertilizer B</div>
+                        <div class="absolute bottom-2 left-[83.5%] -translate-x-1/2 text-xs font-bold text-red-600">
+                            Fertilizer C</div>
+
+                        <!-- Rendered Elements (Dots, Lines) will go here -->
+                        <div id="chart-elements" class="absolute inset-0 bottom-8 top-4 left-8 right-4"></div>
+                    </div>
+
+                    <!-- F-Ratio Visualizer (Used in Step 5) -->
+                    <div id="f-ratio-visual" class="hidden w-full max-w-sm flex-col items-center justify-center h-80">
+                        <div class="flex flex-col items-center w-full mb-4">
+                            <span class="text-sm font-bold text-purple-700 mb-1">Signal (Between-Group Variance)</span>
+                            <div class="w-full bg-purple-200 rounded-full h-6 overflow-hidden">
+                                <div class="bg-purple-600 h-6 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div class="text-2xl font-bold my-2 text-slate-400">÷</div>
+                        <div class="flex flex-col items-center w-full mt-2">
+                            <span class="text-sm font-bold text-orange-700 mb-1">Noise (Within-Group Variance)</span>
+                            <div class="w-full bg-orange-200 rounded-full h-6 overflow-hidden">
+                                <div class="bg-orange-500 h-6 rounded-full" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <div class="mt-8 text-center">
+                            <p class="text-xl font-bold">F-Ratio is <span class="text-green-600">High</span></p>
+                            <p class="text-sm text-slate-500">Means are significantly different!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Controls -->
+            <div class="bg-slate-100 p-4 border-t border-slate-200 flex justify-between items-center px-6 md:px-8">
+                <button id="btn-prev"
+                    class="px-5 py-2 rounded-md font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    ← Previous
+                </button>
+
+                <div class="flex space-x-2" id="dot-indicators">
+                    <!-- Dots injected via JS -->
+                </div>
+
+                <button id="btn-next"
+                    class="px-5 py-2 rounded-md font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next →
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/anova.js"></script>
+</body>
+
+</html>

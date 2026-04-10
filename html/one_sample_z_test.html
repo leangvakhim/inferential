@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Sample Z-Test Visualization</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        /* Smooth transitions for content */
+        #content-container {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex flex-col">
+
+    <header class="bg-indigo-600 text-white p-6 shadow-md">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold">Interactive Inferential Statistics</h1>
+            <p class="text-indigo-200 mt-1 text-lg">Visualizing the One Sample Z-Test</p>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8">
+        <div
+            class="bg-white rounded-2xl shadow-xl w-full max-w-6xl flex flex-col lg:flex-row overflow-hidden border border-slate-200">
+
+            <!-- Left Panel: Text and Math Content -->
+            <div class="flex-1 p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-200">
+
+                <div>
+                    <div class="flex justify-between items-center mb-6">
+                        <span id="step-badge"
+                            class="px-3 py-1 bg-indigo-100 text-indigo-700 font-semibold rounded-full text-sm tracking-wide">Step
+                            1 of 7</span>
+                    </div>
+
+                    <div id="content-container">
+                        <h2 id="step-title" class="text-2xl font-bold text-slate-900 mb-4"></h2>
+                        <div id="step-desc" class="prose prose-slate prose-lg max-w-none text-slate-600 space-y-4">
+                            <!-- JS injected content goes here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="mt-10 flex justify-between items-center pt-6 border-t border-slate-100">
+                    <button id="btn-prev"
+                        class="px-6 py-2.5 rounded-lg font-medium text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        &larr; Previous
+                    </button>
+
+                    <div class="flex space-x-2" id="step-dots">
+                        <!-- JS injected dots -->
+                    </div>
+
+                    <button id="btn-next"
+                        class="px-6 py-2.5 rounded-lg font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        Next &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel: Canvas Visualization -->
+            <div class="flex-1 bg-slate-50 p-6 flex flex-col items-center justify-center relative min-h-[400px]">
+                <h3 class="absolute top-6 left-6 font-semibold text-slate-500">Standard Normal Distribution (Z)</h3>
+                <canvas id="z-plot" class="w-full max-w-lg aspect-[4/3]"></canvas>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="../js/one_sample_z_test.js"></script>
+</body>
+
+</html>
