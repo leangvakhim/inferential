@@ -357,7 +357,7 @@ const stepsData = [
                 <div class="w-full max-w-lg fade-in space-y-6">
 
                     <!-- Master Formula -->
-                    <div class="bg-blue-600 text-white rounded-xl p-5 text-center shadow-lg">
+                    <div class="bg-blue-600 text-white rounded-xl p-5 text-center shadow-lg my-4">
                         <h3 class="text-sm uppercase tracking-wider font-semibold text-blue-200 mb-2">The Golden Rule</h3>
                         <div class="text-xl md:text-2xl font-bold">
                             Estimate &plusmn; (Critical Value &times; Standard Error)
@@ -466,7 +466,6 @@ function drawStep5(w, h) {
     ctx.fillStyle = '#64748b'; ctx.font = '14px sans-serif';
     ctx.fillText(`Width based on n=${interactiveState.sampleSize}, Conf=${interactiveState.confidence}%`, xCenter, yPos - 140);
 }
-
 
 // --- UI Controller ---
 function updateUI() {

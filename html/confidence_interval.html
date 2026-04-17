@@ -76,8 +76,8 @@
 
             <!-- Left Panel: Text & Explanations -->
             <div
-                class="w-full md:w-[45%] p-6 md:p-8 overflow-y-auto border-b md:border-b-0 md:border-r border-slate-200 flex flex-col justify-center bg-slate-50 relative z-10">
-                <div id="text-container" class="fade-in">
+                class="w-full h-1/2 md:h-full md:w-[45%] p-6 md:p-8 overflow-y-auto border-b md:border-b-0 md:border-r border-slate-200 flex flex-col bg-slate-50 relative z-10">
+                <div id="text-container" class="fade-in my-auto">
                     <h2 id="step-title" class="text-2xl font-bold text-blue-800 mb-4"></h2>
                     <div id="step-desc" class="text-slate-600 text-base md:text-lg mb-6 leading-relaxed"></div>
                     <div id="step-example"
@@ -87,10 +87,11 @@
             </div>
 
             <!-- Right Panel: Visualization -->
-            <div class="w-full md:w-[55%] relative bg-white flex items-center justify-center p-4">
+            <div class="w-full h-1/2 md:h-full md:w-[55%] relative bg-white flex items-center justify-center p-4">
                 <!-- HTML Overlay for specific steps (like sliders or final formulas) -->
+                <!-- Removed justify-center here to allow scrolling on smaller devices without top cutoff -->
                 <div id="vis-html-overlay"
-                    class="absolute inset-0 z-10 hidden flex-col items-center justify-center p-6 bg-white overflow-y-auto">
+                    class="absolute inset-0 z-10 hidden flex-col items-center py-8 px-6 bg-white overflow-y-auto">
                 </div>
                 <!-- Canvas for drawing animations -->
                 <canvas id="vis-canvas" class="w-full h-full block"></canvas>
