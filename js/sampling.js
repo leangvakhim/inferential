@@ -223,14 +223,139 @@ const steps = [
         }
     },
     {
-        title: "The Goal: Inference",
-        tag: "Conclusion",
-        desc: "Once we have a representative sample (using a good probability method), we calculate the sample statistic (like average coffee cups). We then use this to estimate the true population parameter.",
-        example: "<strong>The Result:</strong> Our perfectly randomized sample average is 4.2 cups per week. Using inferential statistics, we can mathematically project: <em>'We are 95% confident that the true average for all 100,000 adults in Brew City is between 3.9 and 4.5 cups per week.'</em>",
+        title: "Calculating the Sample Mean",
+        tag: "Descriptive Statistics",
+        desc: "Once you have your sample, you calculate the <strong>Sample Mean (x̄)</strong>. This is the mathematical average of your group. <br><br> To find it, you add up all the observed values (<strong>Σx</strong>) and divide by the total number of items in your sample (<strong>n</strong>). <div class='bg-slate-100 p-3 rounded-lg text-center font-mono text-xl font-bold text-slate-700 my-4 border border-slate-200'>x̄ = Σx / n</div>",
+        example: "<strong>Exercise:</strong> Let's say we pull a very small sample of 5 people and ask them how many cups of coffee they drink per week.<br><br><strong>Sample Values (x):</strong> 3, 5, 2, 6, 4<br><strong>Sum (Σx):</strong> 3 + 5 + 2 + 6 + 4 = 20<br><strong>Sample Size (n):</strong> 5<br><br><strong>Sample Mean (x̄):</strong> 20 ÷ 5 = <strong class='text-blue-700 text-lg'>4 cups/week</strong>",
         action: async (animId) => {
             // Clean up researcher if exists
             if (document.getElementById('researcher-temp')) document.getElementById('researcher-temp').remove();
 
+            moveAllToPopulation(animId);
+            await sleep(600, animId);
+
+            // Pick exactly 5 dots and line them up
+            const values = [3, 5, 2, 6, 4];
+            const selected = shuffleArray([...dots]).slice(0, 5);
+
+            selected.forEach((d, i) => {
+                if (animId !== animationId) return;
+
+                // Expand the dots to hold text for this specific step
+                d.el.style.backgroundColor = '#10b981'; // Emerald
+                d.el.style.width = '28px';
+                d.el.style.height = '28px';
+                d.el.style.display = 'flex';
+                d.el.style.alignItems = 'center';
+                d.el.style.justifyContent = 'center';
+                d.el.style.color = 'white';
+                d.el.style.fontWeight = 'bold';
+                d.el.style.fontSize = '14px';
+                d.el.innerText = values[i];
+
+                // Line them up neatly in the sample region
+                d.el.style.left = (68 + (i * 6)) + '%';
+                d.el.style.top = '50%';
+            });
+        }
+    },
+    {
+        title: "Sample Standard Deviation",
+        tag: "Descriptive Statistics",
+        desc: "The <strong>Sample Standard Deviation (s)</strong> tells us how spread out our data is from the mean. <br><br> We find the difference between each value and the mean, square it, add them up, divide by <strong>n - 1</strong> (Bessel's correction), and take the square root. <div class='bg-slate-100 p-3 rounded-lg text-center font-mono text-xl text-slate-700 my-4 border border-slate-200'>s = &radic;[ &Sigma;(x - x̄)&sup2; / (n - 1) ]</div>",
+        example: "<strong>Data: 3, 5, 2, 6, 4 (Mean x̄ = 4)</strong><br><br><strong>1. Squared diffs:</strong> (-1)&sup2;, (1)&sup2;, (-2)&sup2;, (2)&sup2;, (0)&sup2; &rarr; 1, 1, 4, 4, 0<br><strong>2. Sum (&Sigma;):</strong> 1 + 1 + 4 + 4 + 0 = 10<br><strong>3. Divide by (n - 1):</strong> 10 ÷ 4 = 2.5<br><strong>4. Square root:</strong> &radic;2.5 &approx; <strong class='text-blue-700 text-lg'>1.58 cups</strong>",
+        action: async (animId) => {
+            // Clean up researcher if exists
+            if (document.getElementById('researcher-temp')) document.getElementById('researcher-temp').remove();
+
+            moveAllToPopulation(animId);
+            await sleep(600, animId);
+
+            // Pick 5 dots
+            const values = [2, 3, 4, 5, 6]; // Ordered to show spread visually
+            const selected = shuffleArray([...dots]).slice(0, 5);
+
+            selected.forEach((d, i) => {
+                if (animId !== animationId) return;
+
+                let val = values[i];
+
+                // Expand the dots
+                d.el.style.backgroundColor = val === 4 ? '#3b82f6' : '#f59e0b'; // Mean is blue, deviants are amber
+                d.el.style.width = '28px';
+                d.el.style.height = '28px';
+                d.el.style.display = 'flex';
+                d.el.style.alignItems = 'center';
+                d.el.style.justifyContent = 'center';
+                d.el.style.color = 'white';
+                d.el.style.fontWeight = 'bold';
+                d.el.style.fontSize = '14px';
+                d.el.innerText = val;
+
+                // Spread them horizontally based on their value (Center/Mean is at 78%)
+                // 1 unit = 7% width spread
+                let spreadX = 78 + ((val - 4) * 7);
+
+                d.el.style.left = spreadX + '%';
+                d.el.style.top = '50%';
+            });
+        }
+    },
+    {
+        title: "Standard Error of the Mean (SEM)",
+        tag: "Inferential Statistics",
+        desc: "While standard deviation measures how spread out individual data points are, the <strong>Standard Error of the Mean (SEM)</strong> measures how much we expect <em>sample means</em> to vary from the true population mean. <br><br> It is calculated by dividing the sample standard deviation (<strong>s</strong>) by the square root of the sample size (<strong>n</strong>). <div class='bg-slate-100 p-3 rounded-lg text-center font-mono text-xl text-slate-700 my-4 border border-slate-200'>SEM = s / &radic;n</div>",
+        example: "<strong>From our previous exercise:</strong> s &approx; 1.58, n = 5<br><br><strong>1. Square root of n:</strong> &radic;5 &approx; 2.236<br><strong>2. Divide s by &radic;n:</strong> 1.58 &divide; 2.236 &approx; <strong class='text-blue-700 text-lg'>0.71 cups</strong><br><br><em>What this means:</em> If we took many random samples of 5 people, the mean of those samples would typically fall within about 0.71 cups of the true city-wide average.",
+        action: async (animId) => {
+            moveAllToPopulation(animId);
+            await sleep(600, animId);
+
+            // Fade population dots to focus heavily on the sample area
+            dots.forEach(d => { if(animId === animationId) d.el.style.opacity = '0.1'; });
+
+            if (animId !== animationId) return;
+
+            // Show the Sample Mean dot as a single focal point
+            const meanDot = dots[0];
+            meanDot.el.style.opacity = '1';
+            meanDot.el.style.backgroundColor = '#3b82f6';
+            meanDot.el.style.width = '30px';
+            meanDot.el.style.height = '30px';
+            meanDot.el.style.display = 'flex';
+            meanDot.el.style.alignItems = 'center';
+            meanDot.el.style.justifyContent = 'center';
+            meanDot.el.style.color = 'white';
+            meanDot.el.style.fontWeight = 'bold';
+            meanDot.el.innerText = 'x̄';
+            meanDot.el.style.left = '78%';
+            meanDot.el.style.top = '65%';
+            meanDot.el.style.zIndex = '20';
+
+            // Draw SEM zone visualization
+            const semRange = document.createElement('div');
+            semRange.id = 'sem-range-temp';
+            semRange.className = 'absolute border-l-4 border-r-4 border-blue-400 bg-blue-100 bg-opacity-60 transition-all duration-1000 flex items-center justify-center text-blue-900 text-xs font-bold overflow-hidden whitespace-nowrap';
+            semRange.style.width = '0%';
+            semRange.style.height = '60px';
+            semRange.style.left = '78%';
+            semRange.style.top = '50%';
+            semRange.style.transform = 'translate(-50%, -50%)';
+            semRange.style.zIndex = '1';
+            container.appendChild(semRange);
+
+            await sleep(400, animId);
+            if (animId !== animationId) return;
+
+            semRange.style.width = '24%'; // Expands to visibly show the +/- 1 SEM zone conceptually
+            semRange.innerHTML = '&larr; &plusmn;1 SEM &rarr;';
+        }
+    },
+    {
+        title: "The Goal: Inference",
+        tag: "Conclusion",
+        desc: "We just calculated our sample mean (x̄ = 4). We now use this statistic to estimate the true, unknown parameter of the entire population.",
+        example: "<strong>The Result:</strong> Using inferential statistics and our perfectly randomized sample average of 4 cups, we can mathematically project: <br><br><em>'We are 95% confident that the true average for all 100,000 adults in Brew City is between 3.8 and 4.2 cups per week.'</em>",
+        action: async (animId) => {
             // Put a clean random sample in the right box
             moveAllToPopulation(animId);
             await sleep(600, animId);
@@ -276,8 +401,12 @@ function initDots() {
 function moveAllToPopulation(animId) {
     dots.forEach(d => {
         if (animId && animId !== animationId) return;
-        // Strip existing styles and inner elements (pulses)
+        // Strip existing styles, text, and inner elements (pulses)
         d.el.innerHTML = '';
+        d.el.innerText = '';
+        d.el.style.width = '10px';
+        d.el.style.height = '10px';
+        d.el.style.display = 'block';
         d.el.style.backgroundColor = '#94a3b8'; // Slate-400
         d.el.style.boxShadow = 'none';
         d.el.style.opacity = '1';
@@ -359,7 +488,10 @@ function updateUI() {
     animationId++; // Cancel previous animations
 
     // Cleanup UI artifacts
-    if (document.getElementById('researcher-temp')) document.getElementById('researcher-temp').remove();
+    const tempIds = ['researcher-temp', 'sem-range-temp'];
+    tempIds.forEach(id => {
+        if (document.getElementById(id)) document.getElementById(id).remove();
+    });
 
     step.action(animationId);
 }
