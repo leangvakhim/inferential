@@ -4,7 +4,7 @@ const steps = [
         title: "1. The Scenario",
         desc: `
             <p><strong>Real-world Example:</strong> Imagine you work for an electronics company. The marketing team claims that their brand new smartphone model has an average battery life of exactly <strong>24 hours</strong>.</p>
-            <p>Based on extensive testing of similar past models, you know the population standard deviation ($\sigma$) is <strong>2 hours</strong>.</p>
+            <p>Based on extensive testing of similar past models, you know the population standard deviation ($\\sigma$) is <strong>2 hours</strong>.</p>
             <p>We want to test if the marketing team's claim is mathematically valid using a <strong>One Sample Z-test</strong>. This test is perfect when comparing a sample mean to a population mean, and the population standard deviation is known.</p>
         `
     },
@@ -13,10 +13,10 @@ const steps = [
         desc: `
             <p>In statistics, we set up two competing claims before looking at the data.</p>
             <p><strong>Null Hypothesis ($H_0$):</strong> The claim is true. The true average battery life is 24 hours. There is no significant difference.
-            $$H_0: \mu = 24$$
+            $$H_0: \\mu = 24$$
             </p>
             <p><strong>Alternative Hypothesis ($H_1$):</strong> The claim is false. The true average battery life is different from 24 hours.
-            $$H_1: \mu \neq 24$$
+            $$H_1: \\mu \\neq 24$$
             </p>
             <p><em>Since we are checking if it's different (either higher or lower), this is called a <strong>two-tailed test</strong>.</em></p>
         `
