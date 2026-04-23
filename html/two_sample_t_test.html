@@ -7,6 +7,11 @@
     <title>Two-Sample Independent T-Test Visualization</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js and jStat for the dynamic visualizer -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.6/jstat.min.js"></script>
+
     <!-- MathJax for rendering formulas -->
     <script>
         MathJax = {
@@ -22,6 +27,7 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         /* Smooth transitions for step changes */
         .step-container {
@@ -42,6 +48,24 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* Custom styles for the slider */
+        .slider-thumb::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+        }
+
+        .slider-thumb::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -73,12 +97,12 @@
         <div class="mb-8">
             <div class="flex justify-between text-xs font-semibold text-slate-500 mb-2">
                 <span>Start</span>
-                <span id="step-indicator">Step 1 of 7</span>
+                <span id="step-indicator">Step 1 of 8</span>
                 <span>Finish</span>
             </div>
             <div class="w-full bg-slate-200 rounded-full h-2.5">
                 <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
-                    style="width: 14.28%"></div>
+                    style="width: 12.5%"></div>
             </div>
         </div>
 
@@ -95,7 +119,8 @@
                         which one is better at improving math scores. <strong>Method A</strong> is taught to Class 1,
                         and <strong>Method B</strong> is taught to Class 2. At the end of the year, we want to know:
                         <em>Is there a statistically significant difference in the average test scores between the two
-                            classes?</em></p>
+                            classes?</em>
+                    </p>
                 </div>
                 <p class="mb-4">A <strong>Two-Sample Independent T-Test</strong> is used to compare the means (averages)
                     of two independent, distinct groups to determine if there is statistical evidence that the
@@ -205,7 +230,8 @@
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">4. Calculating the T-Statistic (Signal vs. Noise)</h2>
                 <p class="mb-4">The T-statistic calculates a ratio. It compares the difference between our group means
                     (the <strong>Signal</strong>) to the variability or spread of the groups (the
-                    <strong>Noise</strong>).</p>
+                    <strong>Noise</strong>).
+                </p>
 
                 <div class="bg-amber-50 rounded-xl p-6 border border-amber-200 shadow-inner my-6">
                     <div class="text-center text-xl sm:text-2xl font-bold mb-4">
@@ -231,7 +257,7 @@
 
             <!-- STEP 5: P-Value & Distribution -->
             <div id="step-5" class="step-container hidden flex-grow">
-                <h2 class="text-2xl font-bold text-blue-700 mb-4">5. Degrees of Freedom & The P-Value</h2>
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">5. The Distribution & The P-Value</h2>
                 <p class="mb-2">Once we have our t-statistic, we plot it on a t-distribution curve. The shape of this
                     curve depends on our sample sizes, known as <strong>Degrees of Freedom ($df$)</strong>.</p>
                 <p class="text-sm text-slate-600 mb-4">For our example: $df = (30 - 1) + (32 - 1) = 60$.</p>
@@ -274,9 +300,47 @@
                 </div>
             </div>
 
-            <!-- STEP 6: Conclusion -->
-            <div id="step-6" class="step-container hidden flex-grow">
-                <h2 class="text-2xl font-bold text-blue-700 mb-4">6. Making the Conclusion</h2>
+            <!-- STEP 6: Interactive DF Visualizer -->
+            <div id="step-6" class="step-container hidden flex-grow flex flex-col">
+                <h2 class="text-2xl font-bold text-blue-700 mb-2">6. Visualizing Degrees of Freedom ($df$)</h2>
+                <p class="text-sm text-slate-600 mb-4">
+                    The exact shape of the curve from Step 5 depends on your sample sizes. When you have small samples
+                    (low noise confidence), the tails get fatter, making it harder to prove a significant difference.
+                    <strong>Drag the slider to see how it changes!</strong>
+                </p>
+
+                <!-- Controls Container -->
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6 mb-4">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-2">
+                        <label for="df-slider" class="text-slate-800 font-semibold text-md sm:text-lg">
+                            Degrees of Freedom ($df$): <span id="df-display"
+                                class="text-blue-600 font-bold text-xl ml-2">60</span>
+                        </label>
+                        <span id="df-insight"
+                            class="text-xs sm:text-sm font-medium text-green-600 bg-white px-3 py-1 rounded-full border border-green-200 shadow-sm text-center">
+                            df ≥ 30: Almost identical to Normal curve!
+                        </span>
+                    </div>
+
+                    <input type="range" id="df-slider" min="1" max="100" value="60"
+                        class="w-full h-2 bg-slate-300 rounded-lg appearance-none cursor-pointer slider-thumb focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gradient-to-r from-blue-500 to-blue-300">
+
+                    <div class="flex justify-between text-xs text-slate-500 mt-2 font-medium">
+                        <span>1 (Fat Tails)</span>
+                        <span>30 (The Turning Point)</span>
+                        <span>100 (Nearly Normal)</span>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="relative flex-grow w-full min-h-[250px]">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- STEP 7: Conclusion -->
+            <div id="step-7" class="step-container hidden flex-grow">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">7. Making the Conclusion</h2>
                 <p class="mb-6">To make our final decision, we compare our calculated P-value to an alpha level
                     ($\alpha$), typically set at <strong>0.05</strong> (a 5% threshold).</p>
 
@@ -313,9 +377,9 @@
                 </div>
             </div>
 
-            <!-- STEP 7: Recap & Formulas -->
-            <div id="step-7" class="step-container hidden flex-grow">
-                <h2 class="text-2xl font-bold text-blue-700 mb-4">7. Recap & The Mathematical Formulas</h2>
+            <!-- STEP 8: Recap & Formulas -->
+            <div id="step-8" class="step-container hidden flex-grow">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">8. Recap & The Mathematical Formulas</h2>
                 <p class="text-sm mb-4">Here is the complete mathematical breakdown of the Two-Sample Independent
                     T-Test.</p>
 
