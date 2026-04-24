@@ -34,7 +34,7 @@ const steps = [
         visualMode: "means"
     },
     {
-        title: "3. The Signal: Between-Group Variance ($SSB$)",
+        title: "3. The Signal: Between-Group Variance (SSB)",
         description: `
             <p>Now we look at the <strong>Between-Group Variance</strong> (Sum of Squares Between, or $SSB$).</p>
             <p>This measures how much the <strong>Group Means</strong> differ from the <strong>Grand Mean</strong>. It represents the <em>effect</em> of our independent variable (the fertilizer).</p>
@@ -44,7 +44,7 @@ const steps = [
         visualMode: "between"
     },
     {
-        title: "4. The Noise: Within-Group Variance ($SSW$)",
+        title: "4. The Noise: Within-Group Variance (SSW)",
         description: `
             <p>Next is the <strong>Within-Group Variance</strong> (Sum of Squares Within, or $SSW$), also known as the error variance.</p>
             <p>This measures how much individual data points differ from their <em>own</em> <strong>Group Mean</strong>.</p>
@@ -87,7 +87,7 @@ const steps = [
                 </div>
             </div>
         `,
-        example: `<strong>Summary:</strong> By breaking down the variance into explained ($SSB$) and unexplained ($SSW$) parts, ANOVA gives us a mathematically rigorous way to prove whether different treatments actually work!`,
+        example: `<strong>Summary:</strong> By breaking down the variance into explained (SSB) and unexplained (SSW) parts, ANOVA gives us a mathematically rigorous way to prove whether different treatments actually work!`,
         visualMode: "formulas"
     }
 ];
