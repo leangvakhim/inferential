@@ -60,13 +60,13 @@ const stepsData = [
     {
         title: "3. Gathering Data & Setting Alpha",
         description: `
-            <p>Before collecting data, we set a significance level, denoted by <strong>$\alpha$ (alpha)</strong>. This is our "threshold of surprise." Standard practice is to use $\alpha = 0.05$ (5%). If the probability of seeing our data just by random chance is less than 5%, we will reject $H_0$.</p>
+            <p>Before collecting data, we set a significance level, denoted by <strong> $\\alpha$ (alpha)</strong>. This is our "threshold of surprise." Standard practice is to use $\\alpha = 0.05$ (5%). If the probability of seeing our data just by random chance is less than 5%, we will reject $H_0$.</p>
             <p class="mt-4">Next, TechCorp surveys a random sample of their users:</p>
             <ul class="list-disc pl-5 mt-2">
                 <li>Sample Size ($n$): <strong>150 users</strong></li>
                 <li>Successes ($x$ - users satisfied): <strong>111 users</strong></li>
             </ul>
-            <p class="mt-4">From this, we calculate the <strong>Sample Proportion ($\hat{p}$)</strong>.</p>
+            <p class="mt-4">From this, we calculate the <strong>Sample Proportion ($\\hat{p}$)</strong>.</p>
         `,
         visual: `
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
@@ -98,14 +98,14 @@ const stepsData = [
             <ul class="list-none space-y-3 mt-3">
                 <li class="flex items-center gap-3">
                     <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    <span><strong>Successes:</strong> $n \cdot p_0 = 150 \cdot 0.80 = 120 \ge 10$</span>
+                    <span><strong>Successes:</strong> $n \\cdot p_0 = 150 \\cdot 0.80 = 120 \\ge 10$</span>
                 </li>
                 <li class="flex items-center gap-3">
                     <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    <span><strong>Failures:</strong> $n \cdot (1 - p_0) = 150 \cdot 0.20 = 30 \ge 10$</span>
+                    <span><strong>Failures:</strong> $n \\cdot (1 - p_0) = 150 \\cdot 0.20 = 30 \\ge 10$</span>
                 </li>
             </ul>
-            <p class="mt-4">Both conditions are met! The sample is large enough, so the sampling distribution of $\hat{p}$ is approximately Normal.</p>
+            <p class="mt-4">Both conditions are met! The sample is large enough, so the sampling distribution of $\\hat{p}$ is approximately Normal.</p>
         `,
         visual: `
             <div class="relative w-full max-w-lg mx-auto bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -133,7 +133,7 @@ const stepsData = [
     {
         title: "5. Calculating the Test Statistic (Z-Score)",
         description: `
-            <p>The Test Statistic (Z) tells us how many standard deviations our sample proportion ($\hat{p} = 0.74$) is away from the assumed population proportion ($p_0 = 0.80$).</p>
+            <p>The Test Statistic (Z) tells us how many standard deviations our sample proportion ($\\hat{p} = 0.74$) is away from the assumed population proportion ($p_0 = 0.80$).</p>
             <p class="mt-4">Here is the calculation substituting our data into the formula:</p>
             <div class="bg-white border border-slate-200 p-4 rounded-lg my-4 text-center overflow-x-auto">
                 $$ z = \\frac{\\hat{p} - p_0}{\\sqrt{\\frac{p_0(1-p_0)}{n}}} $$
@@ -232,16 +232,16 @@ const stepsData = [
             </div>
         `,
         visual: `
-            <div class="w-full bg-slate-800 p-6 rounded-xl text-slate-200 shadow-lg border-t-4 border-indigo-500">
-                <h4 class="text-indigo-300 font-bold mb-3 flex items-center gap-2">
+            <div class="w-full bg-indigo-50 p-6 rounded-xl shadow-lg border-t-4 border-indigo-500">
+                <h4 class=" font-bold mb-3 flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Bonus: Confidence Interval
+                    Confidence Interval
                 </h4>
-                <p class="text-sm text-slate-400 mb-4">If you wanted to estimate the <em>actual</em> true proportion with a 95% Confidence Interval, you would use this related formula:</p>
-                <div class="text-center bg-slate-900 py-3 rounded-lg border border-slate-700 text-white font-serif overflow-x-auto">
+                <p class="text-sm mb-4">If you wanted to estimate the <em>actual</em> true proportion with a 95% Confidence Interval, you would use this related formula:</p>
+                <div class="text-center bg-indigo-50 py-3 rounded-lg border border-slate-700 font-serif overflow-x-auto">
                     $$ \\text{CI} = \\hat{p} \\pm Z^* \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}} $$
                 </div>
-                <p class="text-xs text-slate-500 mt-3 text-center">Where $Z^*$ is the critical value (1.96 for 95% confidence).</p>
+                <p class="text-xs mt-3 text-center">Where $Z^*$ is the critical value (1.96 for 95% confidence).</p>
             </div>
         `
     }
