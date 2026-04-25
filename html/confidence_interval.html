@@ -6,27 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Understanding Confidence Intervals</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <style>
-        /* Custom styles for mathematical fractions to avoid external math libraries */
-        .math-fraction {
-            display: inline-flex;
-            flex-direction: column;
-            vertical-align: middle;
-            text-align: center;
-            margin: 0 0.3rem;
-            font-size: 0.9em;
-            line-height: 1.2;
-        }
-
-        .math-fraction>span:first-child {
-            border-bottom: 1px solid currentColor;
-            padding: 0 0.2rem;
-        }
-
-        .math-fraction>span:last-child {
-            padding: 0 0.2rem;
-        }
-
         .fade-in {
             animation: fadeIn 0.4s ease-out forwards;
         }
@@ -47,6 +41,12 @@
         input[type=range] {
             accent-color: #3b82f6;
             /* Tailwind blue-500 */
+        }
+
+        /* Ensures MathJax formulas look consistent in our UI */
+        mjx-container {
+            margin: 0 !important;
+            padding: 0 !important;
         }
     </style>
 </head>
