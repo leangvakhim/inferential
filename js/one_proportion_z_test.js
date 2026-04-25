@@ -179,13 +179,13 @@ const stepsData = [
     {
         title: "7. Making the Decision",
         description: `
-            <p>Finally, we compare our P-value to our significance level ($\alpha$) to make a decision.</p>
+            <p>Finally, we compare our P-value to our significance level ($\\alpha$) to make a decision.</p>
             <div class="flex justify-center items-center gap-4 text-2xl font-bold my-6">
                 <span class="text-amber-600">0.0331</span>
                 <span class="text-slate-400">$\\le$</span>
                 <span class="text-slate-800">0.05</span>
             </div>
-            <p>Since our P-value (0.0331) is <strong>less than or equal to</strong> $\alpha$ (0.05), we reject the null hypothesis ($H_0$).</p>
+            <p>Since our P-value (0.0331) is <strong>less than or equal to</strong> $\\alpha$ (0.05), we reject the null hypothesis ($H_0$).</p>
             <div class="mt-6 bg-green-50 border border-green-200 p-5 rounded-lg relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-2 h-full bg-green-500"></div>
                 <h4 class="text-green-800 font-bold mb-2">Real-World Conclusion:</h4>
