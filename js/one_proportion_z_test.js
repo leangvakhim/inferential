@@ -239,7 +239,7 @@ const stepsData = [
                 </h4>
                 <p class="text-sm mb-4">If you wanted to estimate the <em>actual</em> true proportion with a 95% Confidence Interval, you would use this related formula:</p>
                 <div class="text-center bg-indigo-50 py-3 rounded-lg border border-slate-700 font-serif overflow-x-auto">
-                    $$ \\text{CI} = \\hat{p} \\pm Z^* \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}} $$
+                    $$ \\text{CI} = \p_0 \\pm Z^* \\sqrt{\\frac{\p_0(1-\p_0)}{n}} $$
                 </div>
                 <p class="text-xs mt-3 text-center">Where $Z^*$ is the critical value (1.96 for 95% confidence).</p>
             </div>
