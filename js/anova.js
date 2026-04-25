@@ -1,14 +1,12 @@
 // --- DATA & LOGIC ---
 
 // The Dataset
-// Groups: Fertilizer A (index 0), B (index 1), C (index 2)
-// Values are plant heights (0 to 10 scale for visual simplicity)
 const groups = [
     { id: 'A', color: '#2563eb', xPos: 16.5, data: [3, 4, 5], mean: 4 },   // Blue
     { id: 'B', color: '#16a34a', xPos: 50.0, data: [6, 8, 10], mean: 8 },  // Green
     { id: 'C', color: '#dc2626', xPos: 83.5, data: [5, 6, 7], mean: 6 }    // Red
 ];
-const grandMean = 6; // (12 + 24 + 18) / 9 = 54 / 9 = 6
+const grandMean = 6;
 
 // Application Steps
 const steps = [
@@ -67,7 +65,6 @@ const steps = [
         title: "6. Recap & The ANOVA Formulas",
         description: `
             <p>Here is the complete mathematical breakdown for One-Way ANOVA. The Total Variance ($SST$) is split into Between ($SSB$) and Within ($SSW$) components.</p>
-
             <div class="formula-box text-sm sm:text-base">
                 <p class="mb-2"><strong>Sum of Squares:</strong></p>
                 <div class="overflow-x-auto">
@@ -75,20 +72,25 @@ const steps = [
                     $$ SSB = \\sum n_j (\\bar{x}_j - \\bar{x}_{grand})^2 $$
                     $$ SSW = \\sum (x_{ij} - \\bar{x}_j)^2 $$
                 </div>
-                <p class="mb-2 mt-4"><strong>Degrees of Freedom ($df$):</strong></p>
-                <div class="overflow-x-auto">
-                    $$ df_B = k - 1 \\quad \\text{(k = number of groups)} $$
-                    $$ df_W = N - k \\quad \\text{(N = total observations)} $$
-                </div>
                 <p class="mb-2 mt-4"><strong>Mean Squares & F-Ratio:</strong></p>
                 <div class="overflow-x-auto">
-                    $$ MSB = \\frac{SSB}{df_B} \\quad , \\quad MSW = \\frac{SSW}{df_W} $$
+                    $$ MSB = \\frac{SSB}{k - 1} \\quad , \\quad MSW = \\frac{SSW}{N - k} $$
                     $$ F = \\frac{MSB}{MSW} $$
                 </div>
             </div>
         `,
         example: `<strong>Summary:</strong> By breaking down the variance into explained (SSB) and unexplained (SSW) parts, ANOVA gives us a mathematically rigorous way to prove whether different treatments actually work!`,
         visualMode: "formulas"
+    },
+    {
+        title: "7. The F-Distribution Explorer",
+        description: `
+            <p>Because variance is mathematically squared, the calculated F-ratio is always positive ($\\ge 0$) and follows a skewed probability curve called the <strong>F-Distribution</strong>.</p>
+            <p>The shape of this curve depends on our <strong>Degrees of Freedom</strong> ($df_1$ and $df_2$).</p>
+            <p>If our calculated F-ratio is greater than the Critical Value (falling into the <span class="text-rose-500 font-semibold">red rejection region</span> dictated by our alpha $\\alpha$), we reject the null hypothesis!</p>
+        `,
+        example: `<strong>Try it out:</strong> Adjust the Degrees of Freedom and Alpha level on the right to see how the mathematical threshold for proving statistical significance shifts.`,
+        visualMode: "f-distribution"
     }
 ];
 
@@ -105,6 +107,7 @@ const elIndicators = document.getElementById('dot-indicators');
 const chartArea = document.getElementById('chart-area');
 const chartElements = document.getElementById('chart-elements');
 const fRatioVisual = document.getElementById('f-ratio-visual');
+const fDistVisual = document.getElementById('f-dist-visual');
 const chartTitle = document.getElementById('chart-title');
 
 // Initialize Application
@@ -112,7 +115,7 @@ function init() {
     // Generate progress dots
     steps.forEach((_, index) => {
         const dot = document.createElement('div');
-        dot.className = `w-2.5 h-2.5 rounded-full transition-colors ${index === 0 ? 'bg-blue-600' : 'bg-slate-300'}`;
+        dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-colors ${index === 0 ? 'bg-blue-600' : 'bg-slate-300'}`;
         dot.id = `indicator-${index}`;
         elIndicators.appendChild(dot);
     });
@@ -131,6 +134,9 @@ function init() {
             renderStep();
         }
     });
+
+    // Initialize F-Distribution Chart components
+    initFDistributionChart();
 
     // Initial render
     renderStep();
@@ -159,9 +165,9 @@ function renderStep() {
     steps.forEach((_, index) => {
         const dot = document.getElementById(`indicator-${index}`);
         if (index === currentStep) {
-            dot.className = 'w-2.5 h-2.5 rounded-full transition-colors bg-blue-600';
+            dot.className = 'w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-colors bg-blue-600';
         } else {
-            dot.className = 'w-2.5 h-2.5 rounded-full transition-colors bg-slate-300';
+            dot.className = 'w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-colors bg-slate-300';
         }
     });
 
@@ -169,32 +175,38 @@ function renderStep() {
     handleVisualization(stepData.visualMode);
 }
 
-// Helper: Convert Y value (0-10) to percentage from top (for absolute positioning)
-// Since Y axis is inverted in DOM (0 is top), we flip it.
+// Helper: Convert Y value (0-10) to percentage from top
 const getYPos = (val) => `${(10 - val) / 10 * 100}%`;
 
 function handleVisualization(mode) {
-    // Reset visibility
+    // Reset visibilities
+    chartArea.classList.add('hidden');
+    fRatioVisual.classList.add('hidden');
+    fRatioVisual.classList.remove('flex');
+    fDistVisual.classList.add('hidden');
+    fDistVisual.classList.remove('flex');
     chartTitle.classList.remove('hidden');
 
     if (mode === 'f-ratio') {
-        chartArea.classList.add('hidden');
         fRatioVisual.classList.remove('hidden');
         fRatioVisual.classList.add('flex');
         chartTitle.innerText = "Comparing Variances";
         return;
     } else if (mode === 'formulas') {
-        chartArea.classList.add('hidden');
-        fRatioVisual.classList.add('hidden');
-        fRatioVisual.classList.remove('flex');
         chartTitle.classList.add('hidden');
         return;
-    } else {
-        chartArea.classList.remove('hidden');
-        fRatioVisual.classList.add('hidden');
-        fRatioVisual.classList.remove('flex');
-        chartTitle.innerText = "Plant Height Visualization";
+    } else if (mode === 'f-distribution') {
+        fDistVisual.classList.remove('hidden');
+        fDistVisual.classList.add('flex');
+        chartTitle.innerText = "F-Distribution Curve";
+        // Trigger chart update in case it was hidden during init
+        if (window.fChartInstance) window.fChartInstance.update();
+        return;
     }
+
+    // For scatter, means, between, within modes:
+    chartArea.classList.remove('hidden');
+    chartTitle.innerText = "Plant Height Visualization";
 
     // Clear existing chart elements nicely or create them if first time
     if (chartElements.innerHTML === '') {
@@ -215,20 +227,17 @@ function handleVisualization(mode) {
             groupLines.forEach(line => line.style.opacity = '0');
             if (grandLine) grandLine.style.opacity = '0';
             break;
-
         case 'means':
             allDots.forEach(dot => dot.style.opacity = '0.4');
             groupLines.forEach(line => line.style.opacity = '1');
             if (grandLine) grandLine.style.opacity = '1';
             break;
-
         case 'between':
             allDots.forEach(dot => dot.style.opacity = '0.1');
             groupLines.forEach(line => line.style.opacity = '1');
             if (grandLine) grandLine.style.opacity = '1';
             drawBetweenArrows();
             break;
-
         case 'within':
             allDots.forEach(dot => dot.style.opacity = '1');
             groupLines.forEach(line => line.style.opacity = '1');
@@ -247,12 +256,10 @@ function createChartBase() {
     gLine.style.left = '0';
     gLine.style.opacity = '0';
 
-    // Grand Mean Label
     const gLabel = document.createElement('div');
     gLabel.className = 'absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-bold bg-slate-800 text-white px-2 py-0.5 rounded';
     gLabel.innerText = 'Grand Mean';
     gLine.appendChild(gLabel);
-
     chartElements.appendChild(gLine);
 
     groups.forEach(group => {
@@ -260,18 +267,16 @@ function createChartBase() {
         const mLine = document.createElement('div');
         mLine.className = 'line group-mean-line border-t-4 z-10';
         mLine.style.borderColor = group.color;
-        mLine.style.width = '20%'; // Span across the group area
+        mLine.style.width = '20%';
         mLine.style.top = getYPos(group.mean);
-        mLine.style.left = `${group.xPos - 10}%`; // Center the line on the xPos
+        mLine.style.left = `${group.xPos - 10}%`;
         mLine.style.opacity = '0';
 
-        // Group Mean Label
         const mLabel = document.createElement('div');
         mLabel.className = 'absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-bold text-white px-1 rounded shadow-sm';
         mLabel.style.backgroundColor = group.color;
         mLabel.innerText = `Mean: ${group.mean}`;
         mLine.appendChild(mLabel);
-
         chartElements.appendChild(mLine);
 
         // 3. Data Dots
@@ -283,12 +288,10 @@ function createChartBase() {
             dot.style.backgroundColor = group.color;
             dot.style.border = '2px solid white';
 
-            // Spread dots slightly on X axis to avoid overlap if values are same
             const spread = (i - 1) * 3;
             dot.style.left = `calc(${group.xPos}% + ${spread}px)`;
             dot.style.top = getYPos(val);
 
-            // Store data attributes for drawing arrows later
             dot.dataset.groupMean = group.mean;
             dot.dataset.val = val;
             dot.dataset.xPos = `calc(${group.xPos}% + ${spread}px)`;
@@ -305,16 +308,13 @@ function drawBetweenArrows() {
         arrow.style.backgroundColor = 'purple';
         arrow.style.left = `${group.xPos}%`;
 
-        // Calculate position and height to draw line between Grand Mean and Group Mean
         const topVal = Math.max(group.mean, grandMean);
         const bottomVal = Math.min(group.mean, grandMean);
 
         arrow.style.top = getYPos(topVal);
-        // Convert value difference to percentage height
         const heightPercent = ((topVal - bottomVal) / 10) * 100;
         arrow.style.height = `${heightPercent}%`;
 
-        // Add arrow head/tail styling
         arrow.innerHTML = `
             <div class="absolute -left-1.5 -top-1 text-purple-600 text-[10px]">▲</div>
             <div class="absolute -left-1.5 -bottom-2 text-purple-600 text-[10px]">▼</div>
@@ -332,7 +332,7 @@ function drawWithinArrows() {
         const mean = parseFloat(dot.dataset.groupMean);
         const xPos = dot.dataset.xPos;
 
-        if (val === mean) return; // No arrow if dot is exactly on the mean
+        if (val === mean) return;
 
         const arrow = document.createElement('div');
         arrow.className = 'variance-arrow absolute w-0.5 z-0';
@@ -349,11 +349,131 @@ function drawWithinArrows() {
         chartElements.appendChild(arrow);
     });
 
-    // Add a single label for 'Within' to avoid clutter
     const label = document.createElement('div');
     label.className = 'variance-arrow absolute left-[50%] top-[20%] text-xs font-bold text-orange-700 bg-white px-1 rounded shadow-sm border border-orange-200 z-30 transform -translate-x-1/2';
     label.innerText = 'Within (Error)';
     chartElements.appendChild(label);
+}
+
+// ==========================================
+// F-DISTRIBUTION CHART LOGIC
+// ==========================================
+function initFDistributionChart() {
+    const df1Slider = document.getElementById('df1-slider');
+    const df2Slider = document.getElementById('df2-slider');
+    const alphaSlider = document.getElementById('alpha-slider');
+
+    const df1Display = document.getElementById('df1-val');
+    const df2Display = document.getElementById('df2-val');
+    const alphaDisplay = document.getElementById('alpha-val');
+    const critFDisplay = document.getElementById('crit-f-val');
+
+    const ctx = document.getElementById('fChart').getContext('2d');
+
+    const X_MAX = 8;
+    const X_STEP = 0.05;
+
+    function generateChartData(df1, df2, alpha) {
+        const labels = [];
+        const pdfData = [];
+        const criticalData = [];
+
+        const fCrit = jStat.centralF.inv(1 - alpha, df1, df2);
+
+        for (let x = 0.01; x <= X_MAX; x += X_STEP) {
+            labels.push(x.toFixed(2));
+            let y = jStat.centralF.pdf(x, df1, df2);
+            y = Math.min(y, 2.5);
+            pdfData.push(y);
+
+            if (x >= fCrit) {
+                criticalData.push(y);
+            } else {
+                criticalData.push(null);
+            }
+        }
+        return { labels, pdfData, criticalData, fCrit };
+    }
+
+    function updateChartUI() {
+        const df1 = parseInt(df1Slider.value);
+        const df2 = parseInt(df2Slider.value);
+        const alpha = parseFloat(alphaSlider.value);
+
+        df1Display.textContent = df1;
+        df2Display.textContent = df2;
+        alphaDisplay.textContent = alpha.toFixed(2);
+
+        const data = generateChartData(df1, df2, alpha);
+        critFDisplay.textContent = data.fCrit.toFixed(2);
+
+        if (window.fChartInstance) {
+            window.fChartInstance.data.labels = data.labels;
+            window.fChartInstance.data.datasets[0].data = data.pdfData;
+            window.fChartInstance.data.datasets[1].data = data.criticalData;
+            window.fChartInstance.data.datasets[1].label = `Rejection Region (α = ${alpha.toFixed(2)})`;
+
+            const maxVal = Math.max(...data.pdfData);
+            window.fChartInstance.options.scales.y.max = maxVal > 1.0 ? Math.ceil(maxVal * 1.2 * 10) / 10 : 1.0;
+            window.fChartInstance.update();
+        }
+    }
+
+    // Initial Data load
+    const initData = generateChartData(parseInt(df1Slider.value), parseInt(df2Slider.value), parseFloat(alphaSlider.value));
+
+    window.fChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: initData.labels,
+            datasets: [
+                {
+                    label: 'F-Distribution',
+                    data: initData.pdfData,
+                    borderColor: '#4f46e5',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.3,
+                    fill: false
+                },
+                {
+                    label: `Rejection Region`,
+                    data: initData.criticalData,
+                    backgroundColor: 'rgba(244, 63, 94, 0.4)',
+                    borderColor: '#f43f5e',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.3,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 0 },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                tooltip: { enabled: false }, // disabled tooltips for cleaner view in small space
+                legend: { display: false } // hide legend to save vertical space
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: 'F-Value' },
+                    ticks: { maxTicksLimit: 8 }
+                },
+                y: {
+                    display: false, // hide Y axis labels for cleaner look in step panel
+                    beginAtZero: true,
+                    max: 1.0
+                }
+            }
+        }
+    });
+
+    df1Slider.addEventListener('input', updateChartUI);
+    df2Slider.addEventListener('input', updateChartUI);
+    alphaSlider.addEventListener('input', updateChartUI);
 }
 
 // Run application on load
