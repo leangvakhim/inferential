@@ -3,7 +3,7 @@ const steps = [
     {
         title: "1. The Concept: What is a Chi-Square Test?",
         content: `
-            <p class="text-lg mb-4">The <strong>Chi-Square ($\chi^2$) Test of Independence</strong> is an inferential statistical test used to determine if there is a significant relationship between two <em>categorical</em> variables.</p>
+            <p class="text-lg mb-4">The <strong>Chi-Square ($\\chi^2$) Test of Independence</strong> is an inferential statistical test used to determine if there is a significant relationship between two <em>categorical</em> variables.</p>
 
             <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 rounded-r-lg shadow-sm">
                 <h3 class="font-bold text-amber-800 mb-2 flex items-center gap-2">
@@ -119,7 +119,7 @@ const steps = [
         `
     },
     {
-        title: "5. The Chi-Square Statistic ($\chi^2$)",
+        title: "5. The Chi-Square Statistic ($\\chi^2$)",
         content: `
             <p class="mb-4">Now we compare our Observed ($O$) counts to our Expected ($E$) counts. The larger the difference, the more likely the variables are related.</p>
 
@@ -135,20 +135,20 @@ const steps = [
                 <li>Divide by Expected (standardizes the gap): $100 / 40 = 2.5$</li>
             </ol>
 
-            <p>We repeat this for all 9 cells in our table and add the results together ($\sum$). For our movie theater, the total sum is <strong>$\chi^2 = 33.33$</strong>.</p>
+            <p>We repeat this for all 9 cells in our table and add the results together ($\\sum$). For our movie theater, the total sum is <strong>$\\chi^2 = 33.33$</strong>.</p>
         `
     },
     {
         title: "6. Degrees of Freedom & The Decision",
         content: `
-            <p class="mb-4">Is a $\chi^2$ score of 33.33 high enough to say there's a relationship? To know, we calculate the <strong>Degrees of Freedom ($df$)</strong>.</p>
+            <p class="mb-4">Is a $\\chi^2$ score of 33.33 high enough to say there's a relationship? To know, we calculate the <strong>Degrees of Freedom ($df$)</strong>.</p>
 
             <div class="bg-slate-100 p-4 rounded-lg mb-6 border border-slate-200">
                 <p class="text-center text-lg mb-2">$$ df = (\\text{Rows} - 1) \\times (\\text{Columns} - 1) $$</p>
                 <p class="text-center text-slate-700">For our table: $df = (3 - 1) \\times (3 - 1) = 2 \\times 2 = 4$</p>
             </div>
 
-            <p class="mb-4">Using a Chi-Square distribution table (with $df=4$ and a standard alpha level of $\alpha = 0.05$), the critical threshold is <strong>9.49</strong>.</p>
+            <p class="mb-4">Using a Chi-Square distribution table (with $df=4$ and a standard alpha level of $\\alpha = 0.05$), the critical threshold is <strong>9.49</strong>.</p>
 
             <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg shadow-sm">
                 <h3 class="font-bold text-green-800 mb-2">Conclusion</h3>
