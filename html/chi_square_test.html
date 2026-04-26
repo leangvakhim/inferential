@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Chi-Square Test Guide</title>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Configure MathJax for LaTeX rendering -->
     <script>
@@ -49,10 +54,8 @@
 
         .highlight-cell {
             background-color: #dbeafe;
-            /* blue-100 */
             font-weight: bold;
             color: #1e3a8a;
-            /* blue-900 */
         }
     </style>
 </head>
@@ -98,7 +101,7 @@
             </button>
 
             <div class="text-slate-500 font-medium text-sm">
-                Step <span id="current-step-display">1</span> of <span id="total-steps-display">7</span>
+                Step <span id="current-step-display">1</span> of <span id="total-steps-display">9</span>
             </div>
 
             <button id="next-btn"
