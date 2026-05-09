@@ -303,11 +303,65 @@ const steps = [
                 </div>
             </div>
         `
+    },
+    {
+        title: "10. Implementation in Python (statsmodels)",
+        content: `
+            <p class="text-lg mb-4">You can easily perform the Chi-Square test in Python using the powerful <strong>statsmodels</strong> library. Let's apply it to our movie theater data!</p>
+
+            <div class="bg-slate-800 rounded-lg overflow-hidden shadow-lg mb-6">
+                <div class="bg-slate-900 px-4 py-2 text-xs text-slate-400 font-mono flex justify-between">
+                    <span>chi_square_test.py</span>
+                    <span>Python</span>
+                </div>
+                <div class="p-4 overflow-x-auto">
+<pre class="text-slate-50 font-mono text-sm leading-relaxed">
+<span class="text-pink-400">import</span> numpy <span class="text-pink-400">as</span> np
+<span class="text-pink-400">import</span> statsmodels.api <span class="text-pink-400">as</span> sm
+
+<span class="text-slate-400"># 1. Define the contingency table (Observed frequencies)</span>
+<span class="text-slate-400"># Rows: Action, Comedy, Horror | Cols: Popcorn, Nachos, Candy</span>
+observed_data = np.array([
+ 	&nbsp;[<span class="text-orange-300">50</span>, <span class="text-orange-300">30</span>, <span class="text-orange-300">20</span>],
+ 	&nbsp;[<span class="text-orange-300">40</span>, <span class="text-orange-300">20</span>, <span class="text-orange-300">40</span>],
+ 	&nbsp;[<span class="text-orange-300">30</span>, <span class="text-orange-300">10</span>, <span class="text-orange-300">60</span>]
+])
+
+<span class="text-slate-400"># 2. Create a Table object in statsmodels</span>
+table = sm.stats.Table(observed_data)
+
+<span class="text-slate-400"># 3. Perform the Chi-Square test of independence</span>
+test_results = table.test_nominal_association()
+
+<span class="text-slate-400"># 4. Print the results</span>
+<span class="text-sky-300">print</span>(<span class="text-green-300">f"Chi-Square Statistic: </span><span class="text-orange-300">{</span>test_results.statistic<span class="text-orange-300">:.2f}</span><span class="text-green-300">"</span>)
+<span class="text-sky-300">print</span>(<span class="text-green-300">f"Degrees of Freedom: </span><span class="text-orange-300">{</span>test_results.df<span class="text-orange-300">}</span><span class="text-green-300">"</span>)
+<span class="text-sky-300">print</span>(<span class="text-green-300">f"P-value: </span><span class="text-orange-300">{</span>test_results.pvalue<span class="text-orange-300">:.4e}</span><span class="text-green-300">"</span>)
+</pre>
+                </div>
+            </div>
+
+            <h3 class="font-bold text-slate-800 mb-3">Code Explanation:</h3>
+            <ul class="list-none space-y-3 mb-6">
+                <li class="bg-white border border-slate-200 p-3 rounded-lg shadow-sm">
+                    <code class="text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded text-sm">np.array([...])</code>
+                    <p class="text-sm text-slate-600 mt-1">Converts our raw 2D contingency table into a numpy matrix format that statsmodels can easily process.</p>
+                </li>
+                <li class="bg-white border border-slate-200 p-3 rounded-lg shadow-sm">
+                    <code class="text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded text-sm">sm.stats.Table()</code>
+                    <p class="text-sm text-slate-600 mt-1">Initializes a powerful contingency table object. Under the hood, this object automatically calculates expected frequencies, marginal distributions, and standardized residuals for you.</p>
+                </li>
+                <li class="bg-white border border-slate-200 p-3 rounded-lg shadow-sm">
+                    <code class="text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded text-sm">.test_nominal_association()</code>
+                    <p class="text-sm text-slate-600 mt-1">The primary command that runs the actual Chi-Square test for independence on the nominal (categorical) data, returning an object containing the calculated statistic, p-value, and degrees of freedom.</p>
+                </li>
+            </ul>
+        `
     }
 ];
 
 let currentStep = 0;
-let chartInstance = null; // Store chart globally so we can destroy it if changing steps
+let chartInstance = null;
 
 // DOM Elements
 const stepContainer = document.getElementById('step-container');
@@ -331,7 +385,9 @@ function setupIndicators() {
         const indicator = document.createElement('div');
         indicator.className = `flex-1 text-center border-t-2 pt-1 transition-colors duration-300 ${index === 0 ? 'border-amber-400 text-amber-200' : 'border-indigo-800 text-indigo-800/50'}`;
         indicator.id = `indicator-${index}`;
-        indicator.textContent = `S${index + 1}`;
+
+        // Add a small dot/number indicator based on size
+        indicator.innerHTML = `<span class="hidden md:inline">S${index + 1}</span><span class="md:hidden text-[10px]">&#9679;</span>`;
         stepIndicators.appendChild(indicator);
     });
 }
@@ -347,7 +403,7 @@ function updateIndicators() {
     });
 }
 
-// Initialize Chi-Square Dynamic Chart when Step 7 is rendered
+// Initialize Chi-Square Dynamic Chart when Step 8 (index 7) is rendered
 function initChiSquareChart() {
     const canvas = document.getElementById('chiSquareChart');
     const slider = document.getElementById('df-slider');
@@ -491,12 +547,15 @@ async function renderStep() {
             nextBtn.innerHTML = `Finish <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>`;
             nextBtn.classList.replace('bg-indigo-600', 'bg-green-600');
             nextBtn.classList.replace('hover:bg-indigo-700', 'hover:bg-green-700');
-            nextBtn.disabled = true; // Optionally disable or loop back
+            // Prevent advancing beyond the last step
+            nextBtn.disabled = true;
+            nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
         } else {
             nextBtn.innerHTML = `Next <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>`;
             nextBtn.classList.replace('bg-green-600', 'bg-indigo-600');
             nextBtn.classList.replace('hover:bg-green-700', 'hover:bg-indigo-700');
             nextBtn.disabled = false;
+            nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
 
         // Update Progress bar

@@ -12,14 +12,14 @@ const stepsData = [
         `,
         visual: `
             <div class="flex flex-col md:flex-row gap-6 items-center justify-center w-full">
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center flex-1">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center flex-1 w-full">
                     <div class="text-4xl mb-2">📊</div>
                     <h3 class="font-bold text-slate-800">Industry Standard</h3>
                     <p class="text-3xl font-black text-indigo-600 mt-2">80%</p>
                     <p class="text-sm text-slate-500 mt-1">Target Satisfaction</p>
                 </div>
                 <div class="text-3xl text-slate-400 font-bold">VS</div>
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center flex-1">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center flex-1 w-full">
                     <div class="text-4xl mb-2">📱</div>
                     <h3 class="font-bold text-slate-800">TechCorp App</h3>
                     <p class="text-3xl font-black text-rose-500 mt-2">? %</p>
@@ -209,7 +209,7 @@ const stepsData = [
     {
         title: "8. Recap & Formulas Reference",
         description: `
-            <p>Congratulations! You've successfully walked through a One Proportion Z-Test. Here is a summary of all the variables and equations used for your future reference.</p>
+            <p>Congratulations! You've successfully walked through a One Proportion Z-Test conceptually. Here is a summary of all the variables and equations used for your future reference.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
@@ -239,9 +239,57 @@ const stepsData = [
                 </h4>
                 <p class="text-sm mb-4">If you wanted to estimate the <em>actual</em> true proportion with a 95% Confidence Interval, you would use this related formula:</p>
                 <div class="text-center bg-indigo-50 py-3 rounded-lg border border-slate-700 font-serif overflow-x-auto">
-                    $$ \\text{CI} = \p_0 \\pm Z^* \\sqrt{\\frac{\p_0(1-\p_0)}{n}} $$
+                    $$ \\text{CI} = \\hat{p} \\pm Z^* \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}} $$
                 </div>
                 <p class="text-xs mt-3 text-center">Where $Z^*$ is the critical value (1.96 for 95% confidence).</p>
+            </div>
+        `
+    },
+    {
+        title: "9. Python Implementation (statsmodels)",
+        description: `
+            <p>While calculating by hand is excellent for intuition, data scientists utilize libraries like Python's <strong>statsmodels</strong> for speed and accuracy in production.</p>
+            <p class="mt-4">We can use the <code>proportions_ztest</code> function to achieve identical results instantly. We simply feed it our parameters:</p>
+            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-slate-600">
+                <li><code>count</code>: Number of successes ($x = 111$)</li>
+                <li><code>nobs</code>: Total observations/sample size ($n = 150$)</li>
+                <li><code>value</code>: Hypothesized proportion under $H_0$ ($0.80$)</li>
+                <li><code>alternative</code>: 'smaller' (Because our test is left-tailed: $p < 0.80$)</li>
+            </ul>
+        `,
+        visual: `
+            <div class="bg-slate-800 rounded-xl overflow-hidden w-full shadow-lg border border-slate-700">
+                <div class="bg-slate-900 px-4 py-3 flex items-center gap-2 border-b border-slate-700">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="text-slate-400 text-xs ml-2 font-mono">z_test_script.py</span>
+                </div>
+                <div class="p-5 overflow-x-auto">
+                    <pre class="text-slate-300 font-mono text-sm leading-relaxed">
+<span class="text-pink-400">from</span> statsmodels.stats.proportion <span class="text-pink-400">import</span> proportions_ztest
+
+<span class="text-slate-500 italic"># Define our scenario data</span>
+count = <span class="text-orange-400">111</span>
+nobs = <span class="text-orange-400">150</span>
+value = <span class="text-orange-400">0.80</span>
+
+<span class="text-slate-500 italic"># Perform the left-tailed z-test</span>
+stat, pval = proportions_ztest(
+count,
+nobs,
+value=value,
+alternative=<span class="text-green-400">'smaller'</span>
+)
+
+<span class="text-blue-300">print</span>(<span class="text-green-400">f"Z-statistic: </span><span class="text-blue-200">{</span>stat<span class="text-blue-200">:.3f}</span><span class="text-green-400">"</span>)
+<span class="text-blue-300">print</span>(<span class="text-green-400">f"P-value: </span><span class="text-blue-200">{</span>pval<span class="text-blue-200">:.4f}</span><span class="text-green-400">"</span>)</pre>
+                </div>
+                <div class="bg-black/50 p-4 border-t border-slate-700">
+                    <p class="text-slate-500 font-mono text-xs mb-2">Terminal Output:</p>
+                    <p class="text-emerald-400 font-mono text-sm">> Z-statistic: -1.837</p>
+                    <p class="text-emerald-400 font-mono text-sm">> P-value: 0.0331</p>
+                </div>
             </div>
         `
     }

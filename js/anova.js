@@ -1,5 +1,4 @@
-// --- DATA & LOGIC ---
-
+// <!-- DATA & LOGIC INTEGRATED HERE -->
 // The Dataset
 const groups = [
     { id: 'A', color: '#2563eb', xPos: 16.5, data: [3, 4, 5], mean: 4 },   // Blue
@@ -55,7 +54,7 @@ const steps = [
         title: "5. The F-Statistic (Signal vs. Noise)",
         description: `
             <p>ANOVA compares these two types of variance using a ratio called the <strong>F-Statistic</strong>.</p>
-            <p>$$ F = \\frac{\\text{Variance Between Groups (Signal)}}{\\text{Variance Within Groups (Noise)}} $$</p>
+            <p>$$F = \\frac{\\text{Variance Between Groups (Signal)}}{\\text{Variance Within Groups (Noise)}}$$</p>
             <p>If the Signal is much larger than the Noise ($F > 1$), we can conclude that the groups are genuinely different. If the ratio is close to 1, the differences are likely just random chance.</p>
         `,
         example: `<strong>Conclusion:</strong> Because the differences <em>between</em> the fertilizers (Signal) are much bigger than the random differences <em>within</em> the identical treatments (Noise), we conclude the fertilizers have a statistically significant effect!`,
@@ -68,14 +67,14 @@ const steps = [
             <div class="formula-box text-sm sm:text-base">
                 <p class="mb-2"><strong>Sum of Squares:</strong></p>
                 <div class="overflow-x-auto">
-                    $$ SST = \\sum (x_{ij} - \\bar{x}_{grand})^2 $$
-                    $$ SSB = \\sum n_j (\\bar{x}_j - \\bar{x}_{grand})^2 $$
-                    $$ SSW = \\sum (x_{ij} - \\bar{x}_j)^2 $$
+                    $$SST = \\sum (x_{ij} - \\bar{x}_{grand})^2$$
+                    $$SSB = \\sum n_j (\\bar{x}_j - \\bar{x}_{grand})^2$$
+                    $$SSW = \\sum (x_{ij} - \\bar{x}_j)^2$$
                 </div>
                 <p class="mb-2 mt-4"><strong>Mean Squares & F-Ratio:</strong></p>
                 <div class="overflow-x-auto">
-                    $$ MSB = \\frac{SSB}{k - 1} \\quad , \\quad MSW = \\frac{SSW}{N - k} $$
-                    $$ F = \\frac{MSB}{MSW} $$
+                    $$MSB = \\frac{SSB}{k - 1} \\quad , \\quad MSW = \\frac{SSW}{N - k}$$
+                    $$F = \\frac{MSB}{MSW}$$
                 </div>
             </div>
         `,
@@ -91,6 +90,19 @@ const steps = [
         `,
         example: `<strong>Try it out:</strong> Adjust the Degrees of Freedom and Alpha level on the right to see how the mathematical threshold for proving statistical significance shifts.`,
         visualMode: "f-distribution"
+    },
+    {
+        title: "8. ANOVA in Python (statsmodels)",
+        description: `
+            <p>Now that you understand the theory, here is how you implement ANOVA in Python using the popular <code>statsmodels</code> library.</p>
+            <ul class="list-disc pl-5 space-y-2 mt-3">
+                <li><strong>1. Pandas DataFrame:</strong> We first format our raw data into a structured table.</li>
+                <li><strong>2. OLS Model:</strong> We use Ordinary Least Squares (<code>ols</code>) to define our formula: <code>'Height ~ C(Fert)'</code>. The <code>C()</code> indicates Fertilizer is a categorical grouping variable.</li>
+                <li><strong>3. anova_lm:</strong> This function takes the fitted model and generates the standard ANOVA table calculating SS, df, F, and the P-value automatically.</li>
+            </ul>
+        `,
+        example: `<strong>Result Interpretation:</strong> In the terminal output, the <code>PR(>F)</code> value is our P-value (~0.037). Since 0.037 is less than 0.05, we reject the null hypothesis—proving the fertilizers have statistically significant differences!`,
+        visualMode: "python-code"
     }
 ];
 
@@ -104,10 +116,13 @@ const elBadge = document.getElementById('step-badge');
 const btnPrev = document.getElementById('btn-prev');
 const btnNext = document.getElementById('btn-next');
 const elIndicators = document.getElementById('dot-indicators');
+
+// Visual Containers
 const chartArea = document.getElementById('chart-area');
 const chartElements = document.getElementById('chart-elements');
 const fRatioVisual = document.getElementById('f-ratio-visual');
 const fDistVisual = document.getElementById('f-dist-visual');
+const pythonVisual = document.getElementById('python-visual');
 const chartTitle = document.getElementById('chart-title');
 
 // Initialize Application
@@ -181,10 +196,16 @@ const getYPos = (val) => `${(10 - val) / 10 * 100}%`;
 function handleVisualization(mode) {
     // Reset visibilities
     chartArea.classList.add('hidden');
+
     fRatioVisual.classList.add('hidden');
     fRatioVisual.classList.remove('flex');
+
     fDistVisual.classList.add('hidden');
     fDistVisual.classList.remove('flex');
+
+    pythonVisual.classList.add('hidden');
+    pythonVisual.classList.remove('flex');
+
     chartTitle.classList.remove('hidden');
 
     if (mode === 'f-ratio') {
@@ -199,8 +220,12 @@ function handleVisualization(mode) {
         fDistVisual.classList.remove('hidden');
         fDistVisual.classList.add('flex');
         chartTitle.innerText = "F-Distribution Curve";
-        // Trigger chart update in case it was hidden during init
         if (window.fChartInstance) window.fChartInstance.update();
+        return;
+    } else if (mode === 'python-code') {
+        pythonVisual.classList.remove('hidden');
+        pythonVisual.classList.add('flex');
+        chartTitle.innerText = "Implementation via statsmodels";
         return;
     }
 

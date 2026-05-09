@@ -1,6 +1,6 @@
-// <!-- Consolidated JavaScript for Interactivity and Chart -->
+// <!-- Embedded JavaScript for Interactivity and Chart -->
 let currentStep = 1;
-const totalSteps = 8; // Updated to 8 steps
+const totalSteps = 9; // Updated to 9 to include the Python step
 let chartInitialized = false; // Prevents chart rendering issues on hidden tabs
 
 function updateUI() {

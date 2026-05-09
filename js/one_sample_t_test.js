@@ -205,6 +205,57 @@ const stepsData = [
                 </div>
             </div>
         `
+    },
+    {
+        title: "Python Implementation (T-Test)",
+        concept: `
+            <p>While we learned manual calculations, in the real world we use programming languages like Python to run tests instantly.</p>
+            <p class="mt-4">Let's look at how to run a <strong>One-Sample T-Test</strong> using Python's <code>statsmodels</code> library.</p>
+            <ul class="list-disc pl-5 mt-4 space-y-2 text-sm">
+                <li><strong>Library:</strong> In <code>statsmodels</code>, we can use the <code>DescrStatsW</code> class to calculate statistics, which includes a convenient <code>ttest_mean</code> method.</li>
+                <li><strong>Tails:</strong> You control the test direction using the <code>alternative</code> parameter (<code>'two-sided'</code>, <code>'smaller'</code> for left-tailed, or <code>'larger'</code> for right-tailed).</li>
+                <li><strong>P-Value:</strong> It computes the exact <em>p-value</em> directly. If the p-value is less than our $\\alpha$ (0.05), we reject the null hypothesis.</li>
+            </ul>
+        `,
+        example: `
+            <p class="mb-2 text-sm">Here is how you would evaluate the bakery scenario in Python using statsmodels:</p>
+            <div class="bg-slate-800 rounded-lg overflow-hidden shadow-inner text-sm">
+                <div class="flex items-center px-4 py-2 bg-slate-900 border-b border-slate-700">
+                    <span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span>
+                    <span class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>
+                    <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
+                    <span class="text-slate-400 font-mono text-xs ml-2">script.py</span>
+                </div>
+<pre class="p-4 text-slate-50 overflow-x-auto font-mono text-xs md:text-sm leading-relaxed"><span class="text-pink-400">from</span> statsmodels.stats.weightstats <span class="text-pink-400">import</span> DescrStatsW
+
+<span class="text-slate-400"># 1. Provide the actual weights of the 15 cookies</span>
+cookie_weights = [
+<span class="text-orange-300">46.5, 48.2, 45.1, 49.3, 51.0,</span>
+<span class="text-orange-300">44.8, 47.5, 48.9, 46.1, 52.3,</span>
+<span class="text-orange-300">49.8, 45.4, 47.9, 44.2, 53.0</span>
+]
+
+<span class="text-slate-400"># 2. Define the Hypothesized Mean</span>
+null_mean = <span class="text-orange-300">50.0</span>
+
+<span class="text-slate-400"># 3. Perform the T-test using statsmodels</span>
+<span class="text-slate-400"># Use alternative='two-sided', 'smaller' (left), or 'larger' (right)</span>
+t_stat, p_value, df = <span class="text-blue-300">DescrStatsW</span>(cookie_weights).<span class="text-blue-300">ttest_mean</span>(null_mean, alternative=<span class="text-green-300">'two-sided'</span>)
+
+<span class="text-blue-300">print</span>(<span class="text-green-300">f"T-statistic:</span> {t_stat:<span class="text-orange-300">.3f</span>}<span class="text-green-300">"</span>)
+<span class="text-blue-300">print</span>(<span class="text-green-300">f"P-value:</span> {p_value:<span class="text-orange-300">.4f</span>}<span class="text-green-300">"</span>)
+
+<span class="text-pink-400">if</span> p_value < <span class="text-orange-300">0.05</span>:
+<span class="text-blue-300">print</span>(<span class="text-green-300">"Conclusion: Reject Null Hypothesis"</span>)
+<span class="text-pink-400">else</span>:
+<span class="text-blue-300">print</span>(<span class="text-green-300">"Conclusion: Fail to reject Null Hypothesis"</span>)</pre>
+            </div>
+            <div class="mt-4 bg-black text-green-400 p-3 rounded font-mono text-xs">
+                > T-statistic: -2.420<br>
+                > P-value: 0.0296<br>
+                > Conclusion: Reject Null Hypothesis
+            </div>
+        `
     }
 ];
 
@@ -216,6 +267,7 @@ const elTitle = document.getElementById('step-title');
 const elBadge = document.getElementById('step-badge');
 const elConcept = document.getElementById('step-concept');
 const elExample = document.getElementById('step-example');
+const elExampleTitle = document.getElementById('example-title');
 const elProgressBar = document.getElementById('progress-bar');
 const btnPrev = document.getElementById('btn-prev');
 const btnNext = document.getElementById('btn-next');
@@ -250,12 +302,15 @@ function renderStep() {
     elTitle.innerText = data.title;
     elConcept.innerHTML = data.concept;
 
-    // Update the Example layout slightly for the last step
-    if (currentStep === totalSteps - 1) {
-        elExample.parentElement.querySelector('h3').innerHTML = `<span class="text-2xl mr-2">📚</span> Formulas`;
+    // Dynamically change the right column title icon based on the step content
+    if (data.title.includes("Formula")) {
+        elExampleTitle.innerHTML = `<span class="text-2xl mr-2">📚</span> Formulas`;
+    } else if (data.title.includes("Python")) {
+        elExampleTitle.innerHTML = `<span class="text-2xl mr-2">🐍</span> Python Implementation`;
     } else {
-        elExample.parentElement.querySelector('h3').innerHTML = `<span class="text-2xl mr-2">🍪</span> The Bakery Scenario`;
+        elExampleTitle.innerHTML = `<span class="text-2xl mr-2">🍪</span> The Bakery Scenario`;
     }
+
     elExample.innerHTML = data.example;
 
     // Update Progress Bar & Dots
@@ -284,7 +339,7 @@ function renderStep() {
     }
 
     // Tell MathJax to re-render any LaTeX mathematical formulas on the new page
-    if (window.MathJax) {
+    if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
         MathJax.typesetPromise([elConcept, elExample]).catch(function (err) {
             console.log('MathJax processing error: ', err.message);
         });

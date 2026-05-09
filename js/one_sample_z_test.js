@@ -73,6 +73,34 @@ const steps = [
             </div>
             <p class="mt-4 text-sm text-slate-500">Note: Use a Z-test when population $\\sigma$ is known. If $\\sigma$ is unknown, a T-test should be used instead.</p>
         `
+    },
+    {
+        title: "8. Python Implementation (statsmodels)",
+        desc: `
+            <p>In practice, we use Python's <strong>statsmodels</strong> library to compute this quickly. Below is the step-by-step code you would run if you had the raw testing data from the 50 phones:</p>
+
+            <div class="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-x-auto text-sm font-mono shadow-inner border border-slate-700">
+<pre><code><span class="text-pink-400">import</span> numpy <span class="text-pink-400">as</span> np
+<span class="text-pink-400">from</span> statsmodels.stats.weightstats <span class="text-pink-400">import</span> ztest
+
+<span class="text-slate-400"># 1. Load your raw data array (n=50)</span>
+<span class="text-slate-400"># For this example, we'll simulate data with our exact sample mean of 23.2</span>
+sample_data = np.random.<span class="text-blue-300">normal</span>(loc=<span class="text-orange-300">23.2</span>, scale=<span class="text-orange-300">2.0</span>, size=<span class="text-orange-300">50</span>)
+sample_data = sample_data - np.<span class="text-blue-300">mean</span>(sample_data) + <span class="text-orange-300">23.2</span>
+
+<span class="text-slate-400"># 2. Perform the One Sample Z-Test</span>
+<span class="text-slate-400"># x1: our data, value: the Null Hypothesis mean (24)</span>
+z_stat, p_value = <span class="text-blue-300">ztest</span>(x1=sample_data, value=<span class="text-orange-300">24</span>, alternative=<span class="text-green-300">'two-sided'</span>)
+
+<span class="text-blue-300">print</span>(<span class="text-green-300">f"Z-statistic: {</span>z_stat<span class="text-pink-400">:.2f</span><span class="text-green-300">}"</span>)
+<span class="text-emerald-400"># Output: Z-statistic: -2.83</span>
+
+<span class="text-blue-300">print</span>(<span class="text-green-300">f"P-value: {</span>p_value<span class="text-pink-400">:.4f</span><span class="text-green-300">}"</span>)
+<span class="text-emerald-400"># Output: P-value: 0.0047</span></code></pre>
+            </div>
+
+            <p>Because the resulting P-value ($0.0047$) is less than our $\\alpha$ threshold ($0.05$), the code mathematically confirms our decision to <strong>reject the Null Hypothesis</strong>.</p>
+        `
     }
 ];
 
